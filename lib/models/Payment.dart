@@ -1,4 +1,6 @@
-  import 'Subscription.dart';
+  import 'package:intl/intl.dart';
+
+import 'Subscription.dart';
 
   class Payment {
     final int id;
@@ -14,6 +16,12 @@
       required this.payment_date,
       required this.payment_mode
     });
+
+    // Function to format the payment date
+    String get formattedDate {
+      DateTime dateTime = DateTime.parse(payment_date);
+      return DateFormat('dd MMM yyyy, hh:mm a').format(dateTime); // Example: "27 Feb 2025, 12:11 PM"
+    }
 
     factory Payment.fromJson(Map<String, dynamic> json) {
       return Payment(
