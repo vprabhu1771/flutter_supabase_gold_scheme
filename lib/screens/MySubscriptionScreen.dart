@@ -15,6 +15,18 @@ class MySubscriptionScreen extends StatefulWidget {
 class _MySubscriptionScreenState extends State<MySubscriptionScreen> {
   final SupabaseClient supabase = Supabase.instance.client;
 
+  String? userId;
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    setState(() {
+      userId = supabase.auth.currentUser?.id;
+    });
+  }
+
   /// Fetch subscriptions with customer and scheme data.
   Future<List<Subscription>> fetchSubscriptions() async {
     final response = await supabase
@@ -23,6 +35,7 @@ class _MySubscriptionScreenState extends State<MySubscriptionScreen> {
         // .select('id, start_date, status, total_paid, created_at, '
         //   'customer:users(id, name, email, phone), '
         //   'scheme:gold_schemes(id, name, duration_months, total_amount, min_installment)')
+        .eq('customer_id', userId as Object)
         .order('created_at', ascending: false);
 
     print('Raw data from Supabase: $response'); // Debugging output
