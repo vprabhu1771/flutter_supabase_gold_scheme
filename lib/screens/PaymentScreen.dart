@@ -19,7 +19,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Future<List<Payment>> fetchPayments() async {
     final response = await supabase
         .from('payments')
-        // .select('*, subscription:customer_subscriptions(*)')
         .select('*, subscription:customer_subscriptions(id, start_date, status, total_paid, customer:users(*), scheme:gold_schemes(*))')
         .order('payment_date', ascending: false);
 
@@ -28,12 +27,41 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return response.map<Payment>((row) => Payment.fromJson(row)).toList();
   }
 
+  /// Get icon and color based on payment mode
+  Widget getPaymentIcon(String mode) {
+    switch (mode) {
+      case 'Cash':
+        return CircleAvatar(
+          backgroundColor: Colors.green,
+          child: Icon(Icons.money, color: Colors.white),
+        );
+      case 'UPI':
+        return CircleAvatar(
+          backgroundColor: Colors.blue,
+          child: Icon(Icons.qr_code, color: Colors.white),
+        );
+      case 'Card':
+        return CircleAvatar(
+          backgroundColor: Colors.orange,
+          child: Icon(Icons.credit_card, color: Colors.white),
+        );
+      case 'Bank Transfer':
+        return CircleAvatar(
+          backgroundColor: Colors.purple,
+          child: Icon(Icons.account_balance, color: Colors.white),
+        );
+      default:
+        return CircleAvatar(
+          backgroundColor: Colors.grey,
+          child: Icon(Icons.payment, color: Colors.white),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Payment History")
-      ),
+      appBar: AppBar(title: Text("Payment History")),
       body: FutureBuilder<List<Payment>>(
         future: fetchPayments(),
         builder: (context, snapshot) {
@@ -61,10 +89,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 ),
                 child: ListTile(
                   contentPadding: const EdgeInsets.all(16),
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.blueAccent,
-                    child: Icon(Icons.payment, color: Colors.white),
-                  ),
+                  leading: getPaymentIcon(payment.payment_mode),
                   title: Text(
                     'Customer: ${payment.subscription.customer?.name}',
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -74,7 +99,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     children: [
                       Text('Scheme: ${payment.subscription.scheme?.name}'),
                       Text('Amount: ₹ ${payment.amount.toStringAsFixed(2)}'),
-                      Text('Date: ${payment.payment_date}'),
+                      Text('Date: ${payment.formattedDate}'),
                       Text('Mode: ${payment.payment_mode}'),
                     ],
                   ),
