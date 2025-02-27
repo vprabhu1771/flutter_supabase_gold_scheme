@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_supabase_gold_scheme/screens/GoldSchemeScreen.dart';
 import 'package:flutter_supabase_gold_scheme/screens/MySubscriptionScreen.dart';
+import 'package:flutter_supabase_gold_scheme/screens/SettingScreen.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -58,6 +60,19 @@ class CustomDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: Icon(Icons.monetization_on_outlined),
+              title: Text('Gold Scheme'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  parentContext,
+                  MaterialPageRoute(
+                    builder: (context) => GoldSchemeScreen(title: 'Gold Scheme'),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.monetization_on_outlined),
               title: Text('My Subscriptions'),
               onTap: () {
                 Navigator.pop(context);
@@ -87,7 +102,12 @@ class CustomDrawer extends StatelessWidget {
               title: Text('Settings'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, '/settings');
+                Navigator.push(
+                  parentContext,
+                  MaterialPageRoute(
+                    builder: (context) => SettingScreen(title: 'Settings'),
+                  ),
+                );
               },
             ),
             Divider(),
