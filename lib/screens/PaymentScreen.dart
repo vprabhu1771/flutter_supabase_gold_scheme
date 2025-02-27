@@ -103,7 +103,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       Text('Mode: ${payment.payment_mode}'),
                     ],
                   ),
-                  trailing: const Icon(Icons.arrow_forward_ios),
+                  // trailing: const Icon(Icons.arrow_forward_ios),
                 ),
               );
             },
