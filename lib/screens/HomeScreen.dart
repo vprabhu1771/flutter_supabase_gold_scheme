@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: CustomDrawer(parentContext: context),
       appBar: AppBar(title: Text("Gold Price Today")),
       body: StreamBuilder<List<Map<String, dynamic>>>(
         stream: goldPriceStream(),
