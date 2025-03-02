@@ -79,7 +79,7 @@ Stores daily gold prices.
 
 ```sql
 CREATE TABLE gold_prices (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id SERIAL PRIMARY KEY,
     price_per_gram NUMERIC(10,2) NOT NULL,
     recorded_at TIMESTAMP DEFAULT now()
 );
