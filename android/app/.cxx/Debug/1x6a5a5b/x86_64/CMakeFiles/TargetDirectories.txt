@@ -1,0 +1,2 @@
+C:/Users/SRI_ABIRAMI/Documents/GitHub/flutter_supabase_gold_scheme/android/app/.cxx/Debug/1x6a5a5b/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/SRI_ABIRAMI/Documents/GitHub/flutter_supabase_gold_scheme/android/app/.cxx/Debug/1x6a5a5b/x86_64/CMakeFiles/rebuild_cache.dir
