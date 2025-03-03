@@ -31,9 +31,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void initState() {
     super.initState();
-    nameController.text = "admin";
+    nameController.text = "lali";
     phoneController.text = "1234567890";
-    emailController.text = "admin@gmail.com";
+    emailController.text = "lali@gmail.com";
     passwordController.text = "admin@123";
   }
 

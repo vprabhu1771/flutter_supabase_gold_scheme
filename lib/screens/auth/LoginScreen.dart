@@ -69,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (role == 'admin') {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => AdminDashboard(title: "Admin Dashboard",)));
     } else if (role == 'customer') {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen(title: 'Home')));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeScreen(title: "Dashboard")));
     }
   }
 
@@ -121,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
             // Logo at the Top
             Image.asset(
               'assets/splash_logo.jpg',  // Make sure to add your logo in assets folder
-              height: 100,
+              height: 300,
             ),
             SizedBox(height: 20),
 

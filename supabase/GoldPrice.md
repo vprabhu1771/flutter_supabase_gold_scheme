@@ -36,7 +36,7 @@ Tracks the gold balance of each user.
 
 ```sql
 CREATE TABLE gold_holdings (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id SERIAL PRIMARY KEY,
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     gold_grams NUMERIC(10,4) DEFAULT 0.0000,
     last_updated TIMESTAMP DEFAULT now()

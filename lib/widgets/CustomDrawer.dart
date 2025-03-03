@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_supabase_gold_scheme/admin/AdminDashboard.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,6 +10,7 @@ import '../screens/GoldSchemeScreen.dart';
 import '../screens/HomeScreen.dart';
 import '../screens/MySubscriptionScreen.dart';
 import '../screens/SettingScreen.dart';
+import '../screens/TransactionsScreen.dart';
 import '../screens/auth/LoginScreen.dart';
 import '../screens/auth/ProfileScreen.dart';
 import '../screens/auth/RegisterScreen.dart';
@@ -64,18 +66,26 @@ class CustomDrawer extends StatelessWidget {
 
               // Common for all logged-in users
               if (user != null) ...[
+                // ListTile(
+                //   leading: Icon(Icons.home),
+                //   title: Text('Home'),
+                //   onTap: () {
+                //     Navigator.pop(context);
+                //     Navigator.push(parentContext, MaterialPageRoute(builder: (context) => HomeScreen(title: 'Home')));
+                //   },
+                // ),
+              ],
+
+              // Role-based rendering
+              if (role == 'admin') ...[
                 ListTile(
                   leading: Icon(Icons.home),
                   title: Text('Home'),
                   onTap: () {
                     Navigator.pop(context);
-                    Navigator.push(parentContext, MaterialPageRoute(builder: (context) => HomeScreen(title: 'Home')));
+                    Navigator.push(parentContext, MaterialPageRoute(builder: (context) => AdminDashboard(title: 'Admin Dashboard')));
                   },
                 ),
-              ],
-
-              // Role-based rendering
-              if (role == 'admin') ...[
                 ListTile(
                   leading: Icon(Icons.settings),
                   title: Text('Customers Management'),
@@ -119,6 +129,19 @@ class CustomDrawer extends StatelessWidget {
                       parentContext,
                       MaterialPageRoute(
                         builder: (context) => MySubscriptionScreen(title: 'My Subscriptions'),
+                      ),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.monetization_on_outlined),
+                  title: Text('Transactions'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      parentContext,
+                      MaterialPageRoute(
+                        builder: (context) => TransactionsScreen(title: 'Transactions'),
                       ),
                     );
                   },
