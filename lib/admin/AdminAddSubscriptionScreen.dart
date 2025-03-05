@@ -74,8 +74,7 @@ class _AdminAddSubscriptionScreenState
           'start_date': startDate?.toIso8601String(),
           'status': status,
           'total_paid': double.tryParse(totalPaidController.text) ?? 0.0,
-          'installment_amount':
-          double.tryParse(installmentAmountController.text) ?? 0.0,
+          // 'installment_amount': double.tryParse(installmentAmountController.text) ?? 0.0,
         });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Subscription added successfully!')),
