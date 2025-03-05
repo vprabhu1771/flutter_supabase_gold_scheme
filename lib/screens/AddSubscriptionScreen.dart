@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../admin/AddSubscriptionScreen.dart';
+import '../models/GoldScheme.dart';
 
 class AddSubscriptionScreen extends StatefulWidget {
 
