@@ -28,8 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Stream<List<Map<String, dynamic>>> silverPriceStream() {
     return supabase
-        // .from('silver_prices')
-        .from('gold_prices')
+        .from('silver_prices')
+        // .from('gold_prices')
         .stream(primaryKey: ['id'])
         .order('recorded_at', ascending: false)
         .limit(1);
@@ -60,7 +60,25 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: CustomDrawer(parentContext: context),
-      appBar: AppBar(title: Text("Gold & Silver Prices Today")),
+      appBar: AppBar(
+        title: Text("Gold & Silver Prices Today"),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Notifications Works"),
+                  action: SnackBarAction(
+                    label: 'Undo',
+                    onPressed: () {},
+                  ),
+                ),
+              );
+            },
+          )
+        ],
+      ),
       body: Column(
         children: [
           SizedBox(height: 10),
