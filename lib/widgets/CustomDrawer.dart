@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_supabase_gold_scheme/admin/AdminAddSubscriptionScreen.dart';
 import 'package:flutter_supabase_gold_scheme/admin/AdminDashboard.dart';
 import 'package:flutter_supabase_gold_scheme/screens/AddSubscriptionScreen.dart';
 
@@ -85,6 +86,14 @@ class CustomDrawer extends StatelessWidget {
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.push(parentContext, MaterialPageRoute(builder: (context) => AdminDashboard(title: 'Admin Dashboard')));
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.home),
+                  title: Text('Admin Add Subscription'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(parentContext, MaterialPageRoute(builder: (context) => AdminAddSubscriptionScreen(title: 'Admin Dashboard')));
                   },
                 ),
                 ListTile(
