@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_supabase_gold_scheme/admin/AdminDashboard.dart';
+import 'package:flutter_supabase_gold_scheme/screens/AddSubscriptionScreen.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -116,6 +117,19 @@ class CustomDrawer extends StatelessWidget {
                       parentContext,
                       MaterialPageRoute(
                         builder: (context) => GoldSchemeScreen(title: 'Gold Scheme'),
+                      ),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.monetization_on_outlined),
+                  title: Text('Add Gold Subscription'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      parentContext,
+                      MaterialPageRoute(
+                        builder: (context) => AddSubscriptionScreen(title: 'Add Gold Subscription'),
                       ),
                     );
                   },
