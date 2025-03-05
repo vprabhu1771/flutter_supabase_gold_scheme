@@ -1,9 +1,9 @@
 import 'GoldScheme.dart';
-import 'User.dart';
+import 'Customer.dart';
 
 class Subscription {
   final int id;
-  final User? customer;
+  final Customer? customer;
   final GoldScheme? scheme;
   final String startDate;
   final String status;
@@ -21,10 +21,10 @@ class Subscription {
   factory Subscription.fromJson(Map<String, dynamic> json) {
     return Subscription(
       id: json['id'],
-      // customer: User.fromJson(json['customer']),
+      // customer: Customer.fromJson(json['customer']),
       // scheme: GoldScheme.fromJson(json['scheme']),
       customer: json['customer'] != null
-          ? User.fromJson(json['customer'])
+          ? Customer.fromJson(json['customer'])
           : null, // Handle null customer
 
       scheme: json['scheme'] != null
