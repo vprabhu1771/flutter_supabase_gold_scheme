@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_supabase_gold_scheme/admin/AdminPaymentScreen.dart';
+import 'package:flutter_supabase_gold_scheme/admin/customer/CustomerManagementScreen.dart';
+import 'package:flutter_supabase_gold_scheme/admin/gold_scheme/GoldSchemeManagementScreen.dart';
 import 'package:flutter_supabase_gold_scheme/widgets/CustomDrawer.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -186,37 +189,58 @@ class _AdminDashboardState extends State<AdminDashboard> {
       shrinkWrap: true,
       crossAxisSpacing: 10,
       mainAxisSpacing: 10,
-      childAspectRatio: 2.0, // ✅ Reduce aspect ratio
+      childAspectRatio: 2.0,
       physics: NeverScrollableScrollPhysics(),
       children: [
-        _buildCard("Earnings", "₹ ${earnings.toString()}", Icons.monetization_on, Colors.green),
-        _buildCard("Customers", customerCount.toString(), Icons.people, Colors.blue),
-        _buildCard("Schemes", goldSchemeCount.toString(), Icons.card_giftcard, Colors.orange),
-        _buildCard("Gold Price", "₹${goldPrice}/gm", Icons.star, Colors.amber),
-        _buildCard("Silver Price", "₹${silverPrice}/gm", Icons.g_mobiledata, Colors.grey),
+        _buildCard(
+          "Earnings",
+          "₹ ${earnings.toString()}",
+          Icons.monetization_on,
+          Colors.green,
+              () => Navigator.push(context, MaterialPageRoute(builder: (context) => AdminPaymentScreen(title: "Earnings"))), // ✅ Navigate to AdminPaymentScreen
+        ),
+        _buildCard(
+          "Customers",
+          customerCount.toString(),
+          Icons.people,
+          Colors.blue,
+              () => Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerManagementScreen(title: 'Customers'))), // ✅ Navigate to CustomerManagementScreen
+        ),
+        _buildCard(
+            "Schemes",
+            goldSchemeCount.toString(),
+            Icons.card_giftcard,
+            Colors.orange,
+              () => Navigator.push(context, MaterialPageRoute(builder: (context) => GoldSchemeManagementScreen(title: 'Gold Scheme'))), // ✅ Navigate to GoldSchemeManagementScreen
+        ),
+        _buildCard("Gold Price", "₹${goldPrice}/gm", Icons.star, Colors.amber, () {}),
+        _buildCard("Silver Price", "₹${silverPrice}/gm", Icons.g_mobiledata, Colors.grey, () {}),
       ],
     );
   }
 
   // 🔹 Helper function for summary cards
-  Widget _buildCard(String title, String value, IconData icon, Color color) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Row(
-          children: [
-            Icon(icon, color: color, size: 30),
-            SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black54)),
-                Text(value, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ],
+  Widget _buildCard(String title, String value, IconData icon, Color color, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap, // ✅ Navigate on tap
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            children: [
+              Icon(icon, color: color, size: 30),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black54)),
+                  Text(value, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
