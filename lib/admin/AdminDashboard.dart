@@ -19,7 +19,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   final SupabaseClient supabase = Supabase.instance.client;
 
   late String userId;
-  final double earnings = 1250.50;
+  late double earnings = 0;
   late int customerCount = 0;
   late int goldSchemeCount = 0;
   late double goldPrice = 0;
@@ -35,11 +35,25 @@ class _AdminDashboardState extends State<AdminDashboard> {
     setState(() {
       userId = supabase.auth.currentUser!.id; // Replace with actual logged-in user ID
     });
-
+    listenToEarnings();
     fetchCustomerCount();
     fetchSchemeCount();
     fetchGoldSilverData();
     fetchRecentPayments();
+  }
+
+  void listenToEarnings() {
+    supabase.from('payments').stream(primaryKey: ['id', 'amount']).listen((data) {
+      double totalEarnings = data.fold<double>(0.0, (sum, row) {
+        final amount = row['amount'];
+        if (amount != null) {
+          return sum + (double.tryParse(amount.toString()) ?? 0.0);
+        }
+        return sum;
+      });
+
+      setState(() => earnings = totalEarnings);
+    });
   }
 
   fetchCustomerCount() async {
@@ -165,7 +179,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
       childAspectRatio: 2.0, // ✅ Reduce aspect ratio
       physics: NeverScrollableScrollPhysics(),
       children: [
-        _buildCard("Earnings", "₹ 1,25,000", Icons.monetization_on, Colors.green),
+        _buildCard("Earnings", "₹ ${earnings.toString()}", Icons.monetization_on, Colors.green),
         _buildCard("Customers", customerCount.toString(), Icons.people, Colors.blue),
         _buildCard("Schemes", goldSchemeCount.toString(), Icons.card_giftcard, Colors.orange),
         _buildCard("Gold Price", "₹${goldPrice}/gm", Icons.star, Colors.amber),
