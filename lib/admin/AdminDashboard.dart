@@ -36,6 +36,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
       userId = supabase.auth.currentUser!.id; // Replace with actual logged-in user ID
     });
     listenToEarnings();
+    // listenToCustomerCounts();
     fetchCustomerCount();
     fetchSchemeCount();
     fetchGoldSilverData();
@@ -55,6 +56,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
       setState(() => earnings = totalEarnings);
     });
   }
+
+  // void listenToCustomerCounts() {
+  //   supabase.from('users').stream(primaryKey: ['id']).listen((data) {
+  //     setState(() => customerCount = data.length);
+  //   });
+  // }
 
   fetchCustomerCount() async {
     if (userId == null) return; // Ensure userId is not null
@@ -152,6 +159,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 fetchCustomerCount();
                 fetchSchemeCount();
                 fetchGoldSilverData();
+                fetchRecentPayments();
               }
           )
         ],
