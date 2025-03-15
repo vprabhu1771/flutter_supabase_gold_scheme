@@ -51,7 +51,7 @@ class _AdminAddSubscriptionScreenState
         .from('user_roles')
         // .select('*');
         .select('user_id, role_id, users(*)') // Fetch specific user fields
-        .eq('role_id', 2);
+        .eq('role_id', 3);
 
     print(response.toString());
 
