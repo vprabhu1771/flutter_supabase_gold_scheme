@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_supabase_gold_scheme/widgets/CustomDrawer.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -164,6 +165,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           )
         ],
       ),
+      drawer: CustomDrawer(parentContext: context),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
