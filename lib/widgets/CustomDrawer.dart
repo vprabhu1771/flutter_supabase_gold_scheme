@@ -8,6 +8,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 
 import '../admin/customer/CustomerManagementScreen.dart';
+import '../admin/gold_scheme/GoldSchemeManagementScreen.dart';
 import '../screens/GoldSchemeScreen.dart';
 import '../screens/HomeScreen.dart';
 import '../screens/MySubscriptionScreen.dart';
@@ -81,11 +82,19 @@ class CustomDrawer extends StatelessWidget {
               // Role-based rendering
               if (role == 'admin') ...[
                 ListTile(
-                  leading: Icon(Icons.home),
-                  title: Text('Home'),
+                  leading: Icon(Icons.dashboard),
+                  title: Text('Dashboard'),
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.push(parentContext, MaterialPageRoute(builder: (context) => AdminDashboard(title: 'Admin Dashboard')));
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.star),
+                  title: Text('Gold Scheme'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(parentContext, MaterialPageRoute(builder: (context) => GoldSchemeManagementScreen(title: 'Gold Scheme')));
                   },
                 ),
                 ListTile(
