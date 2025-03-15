@@ -7,7 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 
-import '../admin/CustomerManagementScreen.dart';
+import '../admin/customer/CustomerManagementScreen.dart';
 import '../screens/GoldSchemeScreen.dart';
 import '../screens/HomeScreen.dart';
 import '../screens/MySubscriptionScreen.dart';
