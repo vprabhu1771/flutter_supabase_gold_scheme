@@ -1,22 +1,25 @@
 class GoldScheme {
   final int id;
   final String name;
-  final String duration_months;
-  final String total_amount;
-  final String min_installment;
+  final double duration_months;
+  final double total_amount;
+  final double min_installment;
 
   GoldScheme({
     required this.id,
     required this.name,
     required this.duration_months,
     required this.total_amount,
-    required this.min_installment
+    required this.min_installment,
   });
 
-  GoldScheme.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        name =json['name'],
-        duration_months = json['duration_months'],
-        total_amount = json['total_amount'],
-        min_installment = json['min_installment'];
+  factory GoldScheme.fromJson(Map<String, dynamic> json) {
+    return GoldScheme(
+      id: json['id'],
+      name: json['name'],
+      duration_months: double.parse(json['duration_months'].toString()), // Convert to double
+      total_amount: double.parse(json['total_amount'].toString()), // Convert to double
+      min_installment: double.parse(json['min_installment'].toString()), // Convert to double
+    );
+  }
 }
