@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_supabase_gold_scheme/admin/AdminAddSubscriptionScreen.dart';
 import 'package:flutter_supabase_gold_scheme/admin/AdminDashboard.dart';
 import 'package:flutter_supabase_gold_scheme/screens/AddSubscriptionScreen.dart';
+import 'package:flutter_supabase_gold_scheme/screens/GoldHoldingsScreen.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../admin/customer/CustomerManagementScreen.dart';
 import '../admin/gold_scheme/GoldSchemeManagementScreen.dart';
+import '../screens/Dashboardcreen.dart';
 import '../screens/GoldSchemeScreen.dart';
 import '../screens/HomeScreen.dart';
 import '../screens/MySubscriptionScreen.dart';
@@ -90,7 +92,7 @@ class CustomDrawer extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.star),
+                  leading: Icon(Icons.savings),
                   title: Text('Gold Scheme'),
                   onTap: () {
                     Navigator.pop(context);
@@ -98,7 +100,7 @@ class CustomDrawer extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.home),
+                  leading: Icon(Icons.subscriptions),
                   title: Text('Admin Add Subscription'),
                   onTap: () {
                     Navigator.pop(context);
@@ -106,7 +108,7 @@ class CustomDrawer extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.settings),
+                  leading: Icon(Icons.people_alt),
                   title: Text('Customers Management'),
                   onTap: () {
                     Navigator.pop(context);
@@ -123,11 +125,29 @@ class CustomDrawer extends StatelessWidget {
                   title: Text('Home'),
                   onTap: () {
                     Navigator.pop(context);
-                    Navigator.pushReplacementNamed(context, '/home');
+                    Navigator.push(
+                      parentContext,
+                      MaterialPageRoute(
+                        builder: (context) => HomeScreen(title: 'Home'),
+                      ),
+                    );
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.monetization_on_outlined),
+                  leading: Icon(Icons.account_balance_wallet),
+                  title: Text('Gold Holdings'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      parentContext,
+                      MaterialPageRoute(
+                        builder: (context) => DashboardScreen(title: 'Dashboard'),
+                      ),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.savings),
                   title: Text('Gold Scheme'),
                   onTap: () {
                     Navigator.pop(context);
@@ -140,7 +160,7 @@ class CustomDrawer extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.monetization_on_outlined),
+                  leading: Icon(Icons.add_card),
                   title: Text('Add Gold Subscription'),
                   onTap: () {
                     Navigator.pop(context);
@@ -153,7 +173,7 @@ class CustomDrawer extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.monetization_on_outlined),
+                  leading: Icon(Icons.receipt_long),
                   title: Text('My Subscriptions'),
                   onTap: () {
                     Navigator.pop(context);
@@ -166,7 +186,7 @@ class CustomDrawer extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.monetization_on_outlined),
+                  leading: Icon(Icons.history),
                   title: Text('Transactions'),
                   onTap: () {
                     Navigator.pop(context);
