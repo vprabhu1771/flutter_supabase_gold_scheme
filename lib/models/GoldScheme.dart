@@ -1,7 +1,7 @@
 class GoldScheme {
   final int id;
   final String name;
-  final double duration_months;
+  final int duration_months;
   final double total_amount;
   final double min_installment;
 
@@ -17,7 +17,7 @@ class GoldScheme {
     return GoldScheme(
       id: json['id'],
       name: json['name'],
-      duration_months: double.parse(json['duration_months'].toString()), // Convert to double
+      duration_months: int.parse(json['duration_months'].toString()), // Convert to int
       total_amount: double.parse(json['total_amount'].toString()), // Convert to double
       min_installment: double.parse(json['min_installment'].toString()), // Convert to double
     );
