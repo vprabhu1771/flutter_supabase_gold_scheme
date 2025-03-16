@@ -16,18 +16,11 @@ class GoldSchemeScreen extends StatefulWidget {
 class _GoldSchemeScreenState extends State<GoldSchemeScreen> {
   final SupabaseClient supabase = Supabase.instance.client;
 
-  /// Stream to listen to real-time changes in the `gold_scheme` table.
-  Stream<List<GoldScheme>> genreStream() {
+  Stream<List<GoldScheme>> goldSchemeStream() {
     return supabase
         .from('gold_schemes')
         .stream(primaryKey: ['id'])
-        // .map((data) => data.map((row) => GoldScheme.fromJson(row)).toList());
-        .map((data) {
-          print('Raw data from Supabase: $data'); // Print raw response
-          final gold_scheme = data.map((row) => GoldScheme.fromJson(row)).toList();
-          print('Parsed playlists: $gold_scheme'); // Print parsed Playlist objects
-          return gold_scheme;
-        });
+        .map((data) => data.map((row) => GoldScheme.fromJson(row)).toList());
   }
 
   @override
@@ -40,60 +33,116 @@ class _GoldSchemeScreenState extends State<GoldSchemeScreen> {
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () {
-              setState(() {}); // Refresh the StreamBuilder by rebuilding the widget.
+              setState(() {}); // Refresh StreamBuilder
             },
           ),
         ],
       ),
       body: StreamBuilder<List<GoldScheme>>(
-        stream: genreStream(),
+        stream: goldSchemeStream(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (snapshot.hasError) {
-
-            print('Error: ${snapshot.error}');
-
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
+            return Center(child: Text('Error: ${snapshot.error}'));
           }
 
-          final gold_scheme = snapshot.data ?? [];
-
-          if (gold_scheme.isEmpty) {
-            return const Center(
-              child: Text('No gold scheme available.'),
-            );
+          final goldSchemes = snapshot.data ?? [];
+          if (goldSchemes.isEmpty) {
+            return const Center(child: Text('No gold schemes available.'));
           }
 
           return RefreshIndicator(
             onRefresh: () async {
-              setState(() {}); // Rebuilds the StreamBuilder to refresh data.
+              setState(() {}); // Refresh UI
             },
             child: ListView.builder(
-              itemCount: gold_scheme.length,
+              padding: const EdgeInsets.all(12.0),
+              itemCount: goldSchemes.length,
               itemBuilder: (context, index) {
-                final genre = gold_scheme[index];
-                return ListTile(
-                  title: Text(genre.name),
-                  onTap: () {
-                    // Navigator.of(context).push(
-                    //   MaterialPageRoute(
-                    //     builder: (context) => SongFilterByGoldSchemeScreen(
-                    //       title: genre.name,
-                    //       genre: genre,
-                    //     ),
-                    //   ),
-                    // );
-                  },
-                );
+                return GoldSchemeCard(goldScheme: goldSchemes[index]);
               },
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class GoldSchemeCard extends StatefulWidget {
+  final GoldScheme goldScheme;
+  const GoldSchemeCard({super.key, required this.goldScheme});
+
+  @override
+  State<GoldSchemeCard> createState() => _GoldSchemeCardState();
+}
+
+class _GoldSchemeCardState extends State<GoldSchemeCard> {
+  bool _isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ExpansionTile(
+        initiallyExpanded: _isExpanded,
+        onExpansionChanged: (expanded) {
+          setState(() {
+            _isExpanded = expanded;
+          });
+        },
+        title: Text(
+          widget.goldScheme.name,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          'Duration: ${widget.goldScheme.duration_months} months',
+          style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+        ),
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _infoRow(Icons.monetization_on, "Total Amount", "₹${widget.goldScheme.total_amount}"),
+                _infoRow(Icons.payments, "Min Installment", "₹${widget.goldScheme.min_installment}"),
+                const SizedBox(height: 8),
+                ElevatedButton.icon(
+                  icon: const Icon(Icons.info_outline),
+                  label: const Text("View Details"),
+                  onPressed: () {
+                    // Navigate to detailed page (if needed)
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _infoRow(IconData icon, String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.blueAccent),
+          const SizedBox(width: 8),
+          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+          const Spacer(),
+          Text(value, style: const TextStyle(color: Colors.black87)),
+        ],
       ),
     );
   }
