@@ -4,7 +4,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/GoldScheme.dart';
 
 class AddSubscriptionScreen extends StatefulWidget {
-
   final String title;
 
   const AddSubscriptionScreen({super.key, required this.title});
@@ -14,7 +13,6 @@ class AddSubscriptionScreen extends StatefulWidget {
 }
 
 class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
-
   final _formKey = GlobalKey<FormState>();
   final SupabaseClient supabase = Supabase.instance.client;
 
@@ -22,25 +20,37 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
   String? schemeId;
   DateTime? startDate;
   String status = 'Active';
-  TextEditingController totalPaidController = TextEditingController(text: '0.00');
-  List<GoldScheme> goldSchemes = [];
 
+  List<GoldScheme> goldSchemes = [];
+  double totalAmount = 0.0;
+  double minInstallment = 0.0;
+  int durationMonths = 0;
 
   @override
   void initState() {
     super.initState();
-
-    setState(() {
-      customerId = supabase.auth.currentUser?.id;
-    });
-
+    customerId = supabase.auth.currentUser?.id;
     _fetchGoldSchemes();
   }
 
   Future<void> _fetchGoldSchemes() async {
     final response = await supabase.from('gold_schemes').select('*');
+
     setState(() {
       goldSchemes = response.map((e) => GoldScheme.fromJson(e)).toList();
+    });
+  }
+
+  void _onSchemeSelected(String? selectedId) {
+    if (selectedId == null) return;
+
+    setState(() {
+      schemeId = selectedId;
+      GoldScheme selectedScheme =
+      goldSchemes.firstWhere((scheme) => scheme.id.toString() == selectedId);
+      totalAmount = selectedScheme.total_amount;
+      minInstallment = selectedScheme.min_installment;
+      durationMonths = selectedScheme.duration_months;
     });
   }
 
@@ -52,7 +62,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
           'scheme_id': schemeId,
           'start_date': startDate?.toIso8601String(),
           'status': status,
-          'total_paid': double.parse(totalPaidController.text),
+          'total_paid': double.parse(totalAmount.toString()),
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Subscription added successfully!')),
@@ -88,11 +98,6 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
           key: _formKey,
           child: Column(
             children: [
-              // TextFormField(
-              //   decoration: InputDecoration(labelText: 'Customer ID'),
-              //   onChanged: (val) => customerId = val,
-              //   validator: (val) => val!.isEmpty ? 'Enter Customer ID' : null,
-              // ),
               DropdownButtonFormField(
                 decoration: InputDecoration(labelText: 'Gold Scheme'),
                 value: schemeId,
@@ -102,14 +107,14 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
                   child: Text(scheme.name),
                 ))
                     .toList(),
-                onChanged: (val) => setState(() => schemeId = val as String),
+                onChanged: _onSchemeSelected,
                 validator: (val) => val == null ? 'Select a scheme' : null,
               ),
-              TextFormField(
-                controller: totalPaidController,
-                decoration: InputDecoration(labelText: 'Total Paid (₹)'),
-                keyboardType: TextInputType.number,
-              ),
+              SizedBox(height: 10),
+              Text("Total Amount: ₹$totalAmount", style: TextStyle(fontSize: 16)),
+              Text("Min Installment: ₹$minInstallment", style: TextStyle(fontSize: 16)),
+              Text("Duration: $durationMonths months", style: TextStyle(fontSize: 16)),
+
               DropdownButtonFormField(
                 decoration: InputDecoration(labelText: 'Status'),
                 value: status,
