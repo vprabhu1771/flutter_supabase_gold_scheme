@@ -32,18 +32,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
       userId = supabase.auth.currentUser?.id;
     });
 
-    fetchData();
+    fetchGoldPrice();
+    fetchGoldHoldings();
   }
 
-  Future<void> fetchData() async {
-    final userId = supabase.auth.currentUser?.id;
-    final holdingsResponse = await supabase.from('gold_holdings').select('gold_grams').eq('user_id', userId as Object).single();
-    final priceResponse = await supabase.from('gold_prices').select('price_per_gram').order('recorded_at', ascending: false).limit(1).single();
+  Future<void> fetchGoldPrice() async {
+    final priceResponse = await supabase
+                            .from('gold_prices')
+                            .select('price_per_gram')
+                            .order('recorded_at', ascending: false)
+                            .limit(1)
+                            .single();
 
     setState(() {
-      goldHoldings = holdingsResponse?['gold_grams'] ?? 0.0;
       goldPrice = priceResponse?['price_per_gram'] ?? 0.0;
     });
+  }
+
+
+  Future<void> fetchGoldHoldings() async {
+    final user = supabase.auth.currentUser;
+    if (user == null) return;
+
+    final response = await supabase
+        .from('gold_holdings')
+        .select('gold_grams')
+        .eq('user_id', user.id);
+
+    print(response.toString());
+
+    if (response.isNotEmpty) {
+      double totalGold = response.fold(0.0, (sum, row) => sum + (row['gold_grams'] as num).toDouble());
+
+      setState(() {
+        goldHoldings = totalGold;
+      });
+    } else {
+      setState(() {
+        goldHoldings = 0.0;
+      });
+    }
   }
 
   @override
@@ -64,7 +92,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Card(
               child: ListTile(
                 title: Text("Current Gold Price"),
-                subtitle: Text("\$$goldPrice per gram"),
+                subtitle: Text("₹ $goldPrice per gram"),
               ),
             ),
             SizedBox(height: 20),
