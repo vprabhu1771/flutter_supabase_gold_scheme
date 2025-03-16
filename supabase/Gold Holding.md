@@ -1,3 +1,5 @@
+gold_holdings (Customer Gold Balance)
+
 ```sql
 CREATE TABLE gold_holdings (
     id SERIAL PRIMARY KEY,
@@ -5,5 +7,7 @@ CREATE TABLE gold_holdings (
     gold_grams NUMERIC(10,4) DEFAULT 0.0000,
     last_updated TIMESTAMP DEFAULT now()
 );
-
 ```
+
+✅ Stores total gold accumulated by a user
+✅ Updates after each payment
