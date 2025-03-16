@@ -141,7 +141,7 @@ class CustomDrawer extends StatelessWidget {
                     Navigator.push(
                       parentContext,
                       MaterialPageRoute(
-                        builder: (context) => DashboardScreen(title: 'Dashboard'),
+                        builder: (context) => DashboardScreen(title: 'Gold Holdings'),
                       ),
                     );
                   },
