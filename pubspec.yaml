@@ -51,6 +51,7 @@ dependencies:
   flutter_native_splash: ^2.3.9
 
   google_fonts: ^6.1.0  # For better fonts
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
