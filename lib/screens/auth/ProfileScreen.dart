@@ -1,117 +1,85 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../widgets/CustomDrawer.dart';
-import '../HomeScreen.dart';
-
-final supabase = Supabase.instance.client;
-
-class ProfileScreen extends StatefulWidget {
-  final String title;
-
-  const ProfileScreen({super.key, required this.title});
-
+class EditProfileScreen extends StatefulWidget {
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  _EditProfileScreenState createState() => _EditProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _EditProfileScreenState extends State<EditProfileScreen> {
+  final supabase = Supabase.instance.client;
+  final user = Supabase.instance.client.auth.currentUser;
+  final _formKey = GlobalKey<FormState>();
 
-  final storage = FlutterSecureStorage();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
 
-  final user = supabase.auth.currentUser;
+  @override
+  void initState() {
+    super.initState();
+    nameController.text = user?.userMetadata?['name'] ?? '';
+    phoneController.text = user?.userMetadata?['phone'] ?? '';
+    addressController.text = user?.userMetadata?['address'] ?? '';
+  }
 
-  Future<void> signOut() async {
-    await supabase.auth.signOut();
-    await storage.delete(key: 'session');
+  Future<void> updateUser() async {
+    if (_formKey.currentState!.validate()) {
+      await supabase.auth.updateUser(
+        UserAttributes(
+          data: {
+            'name': nameController.text,
+            'phone': phoneController.text,
+            'address': addressController.text,
+          },
+        ),
+      );
 
-    // Navigate to login screen and remove all previous routes
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        // builder: (context) => LoginScreen(title: 'Login'),
-        builder: (context) => HomeScreen(title: 'Home'),
-      ),
-    );
+      // await supabase.from('profiles').update({
+      //   'name': nameController.text,
+      //   'phone': phoneController.text,
+      //   'address': addressController.text,
+      // }).eq('id', user!.id);
+
+      Navigator.pop(context, true); // Return true on success
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+      appBar: AppBar(title: Text("Edit Profile")),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
           child: Column(
             children: [
-              // Profile Image View
-              Center(
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage('https://gravatar.com/avatar/${user!.email}'), // Replace with the user's image URL
-                  backgroundColor: Colors.grey[200],
-                ),
+              TextFormField(
+                controller: nameController,
+                decoration: InputDecoration(labelText: "Name"),
+                validator: (value) => value!.isEmpty ? "Enter your name" : null,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 10),
 
-              // Profile Details List
-              ListTile(
-                leading: Icon(Icons.person),
-                title: Text(user?.userMetadata?['name']), // Replace with dynamic user name
-                trailing: Icon(Icons.edit),
-                onTap: () {
-                  // Handle the edit profile action
-                },
+              TextFormField(
+                controller: phoneController,
+                decoration: InputDecoration(labelText: "Phone"),
+                keyboardType: TextInputType.phone,
+                validator: (value) => value!.isEmpty ? "Enter your phone number" : null,
               ),
-              const Divider(),
+              const SizedBox(height: 10),
 
-              ListTile(
-                leading: Icon(Icons.email),
-                title: Text(user!.email ?? ""), // Replace with dynamic user name
-                // trailing: Icon(Icons.edit),
-                onTap: () {
-                  // Handle the edit profile action
-                },
+              TextFormField(
+                controller: addressController,
+                decoration: InputDecoration(labelText: "Address"),
+                validator: (value) => value!.isEmpty ? "Enter your address" : null,
               ),
-              const Divider(),
+              const SizedBox(height: 20),
 
-              ListTile(
-                leading: Icon(Icons.phone),
-                title: Text(user?.userMetadata?['phone']), // Replace with dynamic phone number
-                onTap: () {
-                  // Handle phone number action
-                },
-              ),
-              const Divider(),
-
-              ListTile(
-                leading: Icon(Icons.location_on),
-                title: Text('New York, USA'), // Replace with dynamic address
-                onTap: () {
-                  // Handle address action
-                },
-              ),
-              const Divider(),
-
-              // Logout Button (Red color)
-              TextButton(
-                onPressed: () {
-
-                  signOut();
-
-                  // Handle logout action
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Logged out')),
-                  );
-
-                },
-                child: const Text(
-                  'Logout',
-                  style: TextStyle(fontSize: 16, color: Colors.red),
-                ),
+              ElevatedButton(
+                onPressed: updateUser,
+                child: Text("Save Changes"),
               ),
             ],
           ),
