@@ -1,85 +1,171 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class EditProfileScreen extends StatefulWidget {
+import '../../widgets/CustomDrawer.dart';
+import '../HomeScreen.dart';
+import 'EditProfilePicScreen.dart';
+import 'EditProfileScreen.dart';
+
+final supabase = Supabase.instance.client;
+
+class ProfileScreen extends StatefulWidget {
+  final String title;
+
+  const ProfileScreen({super.key, required this.title});
+
   @override
-  _EditProfileScreenState createState() => _EditProfileScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
-  final supabase = Supabase.instance.client;
-  final user = Supabase.instance.client.auth.currentUser;
-  final _formKey = GlobalKey<FormState>();
+class _ProfileScreenState extends State<ProfileScreen> {
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
+  final storage = FlutterSecureStorage(); // Secure storage instance
 
-  @override
-  void initState() {
-    super.initState();
-    nameController.text = user?.userMetadata?['name'] ?? '';
-    phoneController.text = user?.userMetadata?['phone'] ?? '';
-    addressController.text = user?.userMetadata?['address'] ?? '';
+  var user = supabase.auth.currentUser;
+
+  Future<void> refreshUserData() async {
+    await supabase.auth.refreshSession();
+    setState(() {
+      user = supabase.auth.currentUser; // Update user state
+    });
   }
 
-  Future<void> updateUser() async {
-    if (_formKey.currentState!.validate()) {
-      await supabase.auth.updateUser(
-        UserAttributes(
-          data: {
-            'name': nameController.text,
-            'phone': phoneController.text,
-            'address': addressController.text,
-          },
-        ),
-      );
+  Future<void> signOut() async {
+    await supabase.auth.signOut();
+    await storage.delete(key: 'session');
 
-      // await supabase.from('profiles').update({
-      //   'name': nameController.text,
-      //   'phone': phoneController.text,
-      //   'address': addressController.text,
-      // }).eq('id', user!.id);
-
-      Navigator.pop(context, true); // Return true on success
-    }
+    // Navigate to login screen and remove all previous routes
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        // builder: (context) => LoginScreen(title: 'Login'),
+        builder: (context) => HomeScreen(title: 'Home'),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Edit Profile")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              TextFormField(
-                controller: nameController,
-                decoration: InputDecoration(labelText: "Name"),
-                validator: (value) => value!.isEmpty ? "Enter your name" : null,
-              ),
-              const SizedBox(height: 10),
+              // Profile Image View
+              Center(
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(
+                          user?.userMetadata?['image_path'] ?? 'https://gravatar.com/avatar/${user!.email}'),
+                      backgroundColor: Colors.grey[200],
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: () async {
 
-              TextFormField(
-                controller: phoneController,
-                decoration: InputDecoration(labelText: "Phone"),
-                keyboardType: TextInputType.phone,
-                validator: (value) => value!.isEmpty ? "Enter your phone number" : null,
-              ),
-              const SizedBox(height: 10),
+                          print(user?.userMetadata?['image_path']);
 
-              TextFormField(
-                controller: addressController,
-                decoration: InputDecoration(labelText: "Address"),
-                validator: (value) => value!.isEmpty ? "Enter your address" : null,
-              ),
-              const SizedBox(height: 20),
+                          bool? result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditProfilePicScreen(),
+                            ),
+                          );
 
-              ElevatedButton(
-                onPressed: updateUser,
-                child: Text("Save Changes"),
+                          if (result == true) {
+                            // Refresh data after edit
+                            // Refresh UI
+                            await refreshUserData();
+                          }
+
+                        },
+                        child: CircleAvatar(
+                          radius: 18,
+                          backgroundColor: Colors.blue,
+                          child: Icon(Icons.edit, color: Colors.white, size: 18),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Profile Details List
+              ListTile(
+                leading: Icon(Icons.person),
+                title: Text(user?.userMetadata?['name']), // Replace with dynamic user name
+                trailing: Icon(Icons.edit),
+                onTap: () async {
+                  // Handle the edit profile action
+                  bool? result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditProfileScreen(),
+                    ),
+                  );
+
+                  if (result == true) {
+                    await refreshUserData(); // Refresh data after edit
+                  }
+                },
+              ),
+              const Divider(),
+
+              ListTile(
+                leading: Icon(Icons.email),
+                title: Text(user!.email ?? ""), // Replace with dynamic user name
+                // trailing: Icon(Icons.edit),
+                onTap: () {
+                  // Handle the edit profile action
+                },
+              ),
+              const Divider(),
+
+              ListTile(
+                leading: Icon(Icons.phone),
+                title: Text(user?.userMetadata?['phone']), // Replace with dynamic phone number
+                onTap: () {
+                  // Handle phone number action
+                },
+              ),
+              const Divider(),
+
+              ListTile(
+                leading: Icon(Icons.location_on),
+                title: Text('New York, USA'), // Replace with dynamic address
+                onTap: () {
+                  // Handle address action
+                },
+              ),
+              const Divider(),
+
+              // Logout Button (Red color)
+              TextButton(
+                onPressed: () {
+
+                  signOut();
+
+                  // Handle logout action
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Logged out')),
+                  );
+
+                },
+                child: const Text(
+                  'Logout',
+                  style: TextStyle(fontSize: 16, color: Colors.red),
+                ),
               ),
             ],
           ),
