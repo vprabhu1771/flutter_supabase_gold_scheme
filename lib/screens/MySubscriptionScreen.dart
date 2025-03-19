@@ -77,7 +77,7 @@ class _MySubscriptionScreenState extends State<MySubscriptionScreen> {
                       Text('Scheme: ${subscription.scheme?.name}'),
                       Text('Start Date: ${subscription.startDate}'),
                       Text('Status: ${subscription.status}'),
-                      Text('Total Paid: \$${subscription.totalPaid}'),
+                      Text('Total Paid: ₹ ${subscription.totalPaid}'),
                     ],
                   ),
                   trailing: Icon(Icons.arrow_forward),
