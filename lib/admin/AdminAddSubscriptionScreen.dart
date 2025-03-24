@@ -130,9 +130,21 @@ class _AdminAddSubscriptionScreenState
                       .map((scheme) => DropdownMenuItem(
                     value: scheme.id.toString(),
                     child: Text(scheme.name),
-                  ))
-                      .toList(),
-                  onChanged: (val) => setState(() => schemeId = val as String),
+                  )).toList(),
+                  // onChanged: (val) => setState(() => schemeId = val as String),
+                  onChanged: (val) {
+                    setState(() {
+                      schemeId = val as String;
+
+                      // Find the selected scheme
+                      GoldScheme? selectedScheme =
+                      goldSchemes.firstWhere((scheme) => scheme.id.toString() == schemeId);
+
+                      // Update total paid and installment amount fields
+                      totalPaidController.text = selectedScheme.total_amount.toString();
+                      installmentAmountController.text = selectedScheme.min_installment.toString();
+                    });
+                  },
                   validator: (val) => val == null ? 'Select a scheme' : null,
                 ),
                 TextFormField(
@@ -157,7 +169,7 @@ class _AdminAddSubscriptionScreenState
                 ListTile(
                   title: Text(startDate == null
                       ? 'Pick Start Date'
-                      : 'Start Date: ${startDate!.toLocal()}'.split(' ')[0]),
+                      : '${startDate!.toLocal()}'.split(' ')[0]),
                   trailing: const Icon(Icons.calendar_today),
                   onTap: _pickDate,
                 ),
