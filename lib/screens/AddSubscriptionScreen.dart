@@ -72,6 +72,13 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $e')),
         );
+
+        print("customer_id $customerId");
+        print("scheme_id $schemeId");
+        print("start_date ${startDate?.toIso8601String()}");
+        print("status $status");
+        print("total_paid ${double.parse(totalAmount.toString())}");
+        print('Error: $e');
       }
     }
   }
@@ -126,7 +133,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
               ListTile(
                 title: Text(startDate == null
                     ? 'Pick Start Date'
-                    : 'Start Date: ${startDate!.toLocal()}'.split(' ')[0]),
+                    : '${startDate!.toLocal()}'.split(' ')[0]),
                 trailing: Icon(Icons.calendar_today),
                 onTap: _pickDate,
               ),
